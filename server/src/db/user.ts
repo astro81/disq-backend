@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { boolean, index, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
-import {channelTable, memberTable, serverTable} from "@/db/server";
+import { channelTable, memberTable, serverTable } from "@/db/server";
+import { friendshipTable, dmConversationTable, dmMessageTable } from "@/db/friendship";
 
 export const user = pgTable(
     'user',
@@ -90,7 +91,7 @@ export const verification = pgTable(
 
 
 
-export const userRelations = relations(user, ({ many }) =>{
+export const userRelations = relations(user, ({ many }) => {
     return ({
         sessions: many(session),
         accounts: many(account),
@@ -100,7 +101,26 @@ export const userRelations = relations(user, ({ many }) =>{
         }),
 
         members: many(memberTable),
-        createdChannels: many(channelTable)
+        createdChannels: many(channelTable),
+
+        // Friendships
+        sentFriendRequests: many(friendshipTable, {
+            relationName: 'friendship_requester'
+        }),
+        receivedFriendRequests: many(friendshipTable, {
+            relationName: 'friendship_addressee'
+        }),
+
+        // DM Conversations
+        dmConversationsAsUserOne: many(dmConversationTable, {
+            relationName: 'dm_user_one'
+        }),
+        dmConversationsAsUserTwo: many(dmConversationTable, {
+            relationName: 'dm_user_two'
+        }),
+
+        // DM Messages
+        dmMessages: many(dmMessageTable),
     });
 });
 
@@ -120,4 +140,3 @@ export const accountRelations = relations(account, ({ one }) => ({
 
 export type User = typeof user.$inferSelect;
 export type InsertUser = typeof user.$inferInsert;
-

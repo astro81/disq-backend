@@ -10,18 +10,23 @@ import messages from '@/api/messages'
 
 import attachments from '@/api/attachments'
 
+import friends from '@/api/friends'
+
+import dmMessages from '@/api/dm-messages'
+
 import ws from '@/api/ws'
+import dmWs from '@/api/ws/dm-index'
 
 const app = new Hono()
 
 
 app.use('*', cors({
-  origin: [process.env.FRONTEND_URL ?? "https://cozy-treacle-17c90f.netlify.app/"],
-  credentials: true,
+	origin: [process.env.FRONTEND_URL ?? "https://cozy-treacle-17c90f.netlify.app/"],
+	credentials: true,
 }))
 
 
-app.use(prettyJSON({ space: 4 })) 
+app.use(prettyJSON({ space: 4 }))
 app.use('*', logger());
 
 
@@ -32,8 +37,13 @@ app.route('/api/messages', messages)
 
 app.route('/api/attachments', attachments)
 
+app.route('/api/friends', friends)
+
+app.route('/api/dm-messages', dmMessages)
+
 
 app.route('/', ws)   // /ws/channel/:channelId
+app.route('/', dmWs) // /ws/dm/:conversationId
 
 
 export default {

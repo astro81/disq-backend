@@ -20,3 +20,10 @@ export {
     conversationTable,
     directMessageTable
 } from '@/db/chat';
+
+export {
+    friendshipTable,
+    dmConversationTable,
+    dmMessageTable,
+    friendshipStatusEnum
+} from '@/db/friendship';
