@@ -3,6 +3,7 @@ import { eq, desc, and, lt, or } from 'drizzle-orm'
 import { db } from '@/db'
 import { dmConversationTable, dmMessageTable } from '@/db/friendship'
 import { user } from '@/db/user'
+import { messageFileTable } from '@/db/chat'
 
 const app = new Hono()
 
@@ -75,9 +76,16 @@ app.get('/:conversationId', async (c) => {
             displayName: user.displayName,
             userProfileImage: user.image,
             userBannerImage: user.profileBannerImage,
+
+            // File metadata
+            messageFileUrl: messageFileTable.messageFileUrl,
+            messageFileName: messageFileTable.messageFileName,
+            messageFileSize: messageFileTable.messageFileSize,
+            messageFileType: messageFileTable.messageFileType,
         })
         .from(dmMessageTable)
         .innerJoin(user, eq(dmMessageTable.userId, user.id))
+        .leftJoin(messageFileTable, eq(dmMessageTable.dmFileId, messageFileTable.messageFileId))
         .where(and(...conditions))
         .orderBy(desc(dmMessageTable.createdAt))
         .limit(DM_MESSAGE_BATCH)

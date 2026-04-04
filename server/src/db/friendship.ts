@@ -10,6 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { user } from '@/db/user';
+import { messageFileTable } from '@/db/chat';
 
 // ── Enums ──────────────────────────────────────────────
 export const friendshipStatusEnum = pgEnum('FriendshipStatus', [
@@ -91,9 +92,15 @@ export const dmMessageTable = pgTable(
                 onUpdate: 'cascade'
             }),
 
+        dmFileId: uuid('dm_file_id').references(() => messageFileTable.messageFileId, {
+            onDelete: 'cascade',
+            onUpdate: 'cascade'
+        }),
+
         deleted: boolean('deleted').default(false).notNull(),
 
         createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+
         updatedAt: timestamp('updated_at', { withTimezone: true })
             .defaultNow()
             .$onUpdate(() => new Date())
@@ -102,7 +109,8 @@ export const dmMessageTable = pgTable(
     (table) => [
         index('dm_msg_user_idx').on(table.userId),
         index('dm_msg_conversation_idx').on(table.dmConversationId),
-        index('dm_msg_conv_msg_idx').on(table.dmConversationId, table.dmMessageId)
+        index('dm_msg_conv_msg_idx').on(table.dmConversationId, table.dmMessageId),
+        index('dm_msg_file_idx').on(table.dmFileId)
     ]
 );
 
@@ -143,6 +151,10 @@ export const dmMessageRelations = relations(dmMessageTable, ({ one }) => ({
     conversation: one(dmConversationTable, {
         fields: [dmMessageTable.dmConversationId],
         references: [dmConversationTable.dmConversationId]
+    }),
+    file: one(messageFileTable, {
+        fields: [dmMessageTable.dmFileId],
+        references: [messageFileTable.messageFileId]
     })
 }));
 

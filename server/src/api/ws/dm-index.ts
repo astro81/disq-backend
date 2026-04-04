@@ -42,7 +42,15 @@ dmWs.get('/ws/dm/:conversationId', upgradeWebSocket((c) => {
 
             const raw = event.data as string
 
-            let payload: { text: string }
+            let payload: {
+                text: string
+                fileUrl?: string
+                fileName?: string
+                filePublicId?: string
+                fileSize?: number
+                fileType?: string
+            }
+
             try {
                 const parsed = JSON.parse(raw)
                 payload = parsed && typeof parsed === 'object' && 'text' in parsed
@@ -68,6 +76,12 @@ dmWs.get('/ws/dm/:conversationId', upgradeWebSocket((c) => {
                 displayName: clientMeta.displayName,
                 userProfileImage: clientMeta.userProfileImage,
                 userBannerImage: clientMeta.userBannerImage,
+
+                // File metadata
+                messageFileUrl: payload.fileUrl,
+                messageFileName: payload.fileName,
+                messageFileSize: payload.fileSize,
+                messageFileType: payload.fileType,
             }
 
             const serialized = JSON.stringify(outgoing)
