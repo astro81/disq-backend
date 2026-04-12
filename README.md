@@ -108,7 +108,7 @@ bun run db:migrate
 
 ```bash
 git clone git@github.com:astro81/disq-backend.git
-cd disq-server
+cd disq-backend
 ```
 
 2. Set up environment variables
@@ -136,7 +136,7 @@ docker compose up --build
 
 ```bash
 git clone https://github.com/your-org/disq-server.git
-cd disq-server/server
+cd disq-backend/server
 ```
 
 2. Install dependencies
