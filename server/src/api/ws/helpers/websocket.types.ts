@@ -9,7 +9,7 @@ export type ClientMeta = {
     displayName: string
     userProfileImage?: string | null
     userBannerImage?: string | null
-    role?: string | null 
+    role?: string | null
 }
 
 export type IncomingPayload = {
