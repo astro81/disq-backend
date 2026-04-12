@@ -1,0 +1,20 @@
+services:
+
+  # Hono / Bun API server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - ./server/.env
+    environment:
+      PORT: 3000
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
