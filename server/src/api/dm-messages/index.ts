@@ -11,7 +11,7 @@ const app = new Hono()
 
 const DM_MESSAGE_BATCH = 30
 
-// POST /api/dm-messages/conversation — get or create a DM conversation
+// POST /api/dm-messages/conversation - get or create a DM conversation
 app.post('/conversation', async (c) => {
     const userId = c.req.header('x-user-id')
     if (!userId) return c.json({ error: 'x-user-id header is required' }, 400)

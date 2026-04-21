@@ -20,7 +20,7 @@ import notificationWs from '@/api/ws/notification-index'
 
 const app = new Hono()
 
-
+// Cors config
 app.use('*', cors({
 	origin: [process.env.FRONTEND_URL ?? "https://cozy-treacle-17c90f.netlify.app/"],
 	credentials: true,

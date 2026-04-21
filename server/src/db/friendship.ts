@@ -12,14 +12,14 @@ import { relations } from 'drizzle-orm';
 import { user } from '@/db/user';
 import { messageFileTable } from '@/db/chat';
 
-// ── Enums ──────────────────────────────────────────────
+// Enums
 export const friendshipStatusEnum = pgEnum('FriendshipStatus', [
     'PENDING',
     'ACCEPTED',
     'REJECTED'
 ]);
 
-// ── Friendship table ───────────────────────────────────
+// Friendship table
 export const friendshipTable = pgTable(
     'friendship',
     {
@@ -50,7 +50,7 @@ export const friendshipTable = pgTable(
     ]
 );
 
-// ── DM Conversation table ──────────────────────────────
+// DM Conversation table
 export const dmConversationTable = pgTable(
     'dm_conversation',
     {
@@ -73,7 +73,7 @@ export const dmConversationTable = pgTable(
     ]
 );
 
-// ── DM Message table ───────────────────────────────────
+// DM Message table
 export const dmMessageTable = pgTable(
     'dm_message',
     {
@@ -114,7 +114,7 @@ export const dmMessageTable = pgTable(
     ]
 );
 
-// ── Relations ──────────────────────────────────────────
+// Relations
 
 export const friendshipRelations = relations(friendshipTable, ({ one }) => ({
     requester: one(user, {
@@ -158,7 +158,7 @@ export const dmMessageRelations = relations(dmMessageTable, ({ one }) => ({
     })
 }));
 
-// ── Types ──────────────────────────────────────────────
+// Types
 export type Friendship = typeof friendshipTable.$inferSelect;
 export type DmConversation = typeof dmConversationTable.$inferSelect;
 export type DmMessage = typeof dmMessageTable.$inferSelect;
