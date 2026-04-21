@@ -16,6 +16,7 @@ import dmMessages from '@/api/dm-messages'
 
 import ws from '@/api/ws'
 import dmWs from '@/api/ws/dm-index'
+import notificationWs from '@/api/ws/notification-index'
 
 const app = new Hono()
 
@@ -44,6 +45,7 @@ app.route('/api/dm-messages', dmMessages)
 
 app.route('/', ws)   // /ws/channel/:channelId
 app.route('/', dmWs) // /ws/dm/:conversationId
+app.route('/', notificationWs) // /ws/notifications/:userId
 
 
 export default {

@@ -3,6 +3,7 @@ import { eq, and, or, desc, ilike, ne } from 'drizzle-orm'
 import { db } from '@/db'
 import { friendshipTable } from '@/db/friendship'
 import { user } from '@/db/user'
+import { notificationManager } from '@/api/ws/helpers/notification-manager'
 
 const app = new Hono()
 
@@ -182,6 +183,19 @@ app.post('/request', async (c) => {
         .values({ requesterId: userId, addresseeId })
         .returning()
 
+    // Send real-time notification to the addressee
+    // Fetch the requester's name for the notification
+    const requester = await db.query.user.findFirst({
+        where: eq(user.id, userId),
+    })
+
+    notificationManager.sendNotification(addresseeId, {
+        type: 'FRIEND_REQUEST_RECEIVED',
+        friendshipId: friendship.friendshipId,
+        fromUserId: userId,
+        fromUserName: requester?.displayName || requester?.name || 'Someone',
+    })
+
     return c.json({ friendship }, 201)
 })
 
@@ -206,6 +220,18 @@ app.post('/accept', async (c) => {
         .set({ status: 'ACCEPTED' })
         .where(eq(friendshipTable.friendshipId, friendshipId))
         .returning()
+
+    // Notify the requester that their request was accepted
+    const acceptor = await db.query.user.findFirst({
+        where: eq(user.id, userId),
+    })
+
+    notificationManager.sendNotification(friendship.requesterId, {
+        type: 'FRIEND_REQUEST_ACCEPTED',
+        friendshipId: updated.friendshipId,
+        fromUserId: userId,
+        fromUserName: acceptor?.displayName || acceptor?.name || 'Someone',
+    })
 
     return c.json({ friendship: updated })
 })
