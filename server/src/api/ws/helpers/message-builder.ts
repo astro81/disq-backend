@@ -8,8 +8,9 @@ export class MessageBuilder {
         payload: IncomingPayload,
         messageId: string | null
     ): OutgoingMessage {
-        
+
         const base: OutgoingMessage = {
+            type: 'MESSAGE',
             messageId,
             channelId,
             memberId: client.memberId,
@@ -37,6 +38,15 @@ export class MessageBuilder {
         return base
     }
 
+    buildDeletionMessage(channelId: string, messageId: string): OutgoingMessage {
+        return {
+            type: 'DELETE_MESSAGE',
+            messageId,
+            channelId,
+            timestamp: Date.now()
+        }
+    }
+
     serializeMessage(message: OutgoingMessage): string {
         return JSON.stringify(message)
     }
@@ -44,8 +54,8 @@ export class MessageBuilder {
     parseIncomingPayload(raw: string): IncomingPayload {
         try {
             const parsed = JSON.parse(raw)
-            
-            if (parsed && typeof parsed === 'object' && 'text' in parsed) 
+
+            if (parsed && typeof parsed === 'object' && 'text' in parsed)
                 return parsed as IncomingPayload
 
             return { text: raw }

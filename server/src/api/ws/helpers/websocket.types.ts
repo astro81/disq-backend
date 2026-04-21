@@ -22,18 +22,19 @@ export type IncomingPayload = {
 }
 
 export type OutgoingMessage = {
+    type?: 'MESSAGE' | 'DELETE_MESSAGE'
     messageId: string | null
     channelId: string
-    memberId: string
-    userId: string
-    message: string
+    memberId?: string
+    userId?: string
+    message?: string
     messageFileUrl?: string | null
     messageFileName?: string | null
     messageFileType?: string | null
     messageFileSize?: number | null
     timestamp: number
-    username: string
-    displayName: string
+    username?: string
+    displayName?: string
     userProfileImage?: string | null
     userBannerImage?: string | null
     role?: string | null
